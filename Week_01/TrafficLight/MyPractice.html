@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的练习</title>
+    <style>
+        .circle {
+            border-radius: 50%;
+            /* 宽度和高度需要相等 */
+            width: 200px;
+            height: 200px;
+            display: inline-block;
+            background-color: grey;
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .yellow {
+            background-color: yellow;
+        }
+
+        .green {
+            background-color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+</body>
+
+</html>
+
+<script>
+    let items = document.getElementsByClassName('circle');
+    let p1 = setInterval(function () {
+        items[2].classList.remove('green');
+        items[1].classList.add('yellow');
+    }, 10000)
+    let p2 = setInterval(function () {
+        items[1].classList.remove('yellow');
+        items[0].classList.add('red');
+    }, 12000)
+    let p3 = setInterval(function () {
+        items[0].classList.remove('red');
+        items[2].classList.add('green');
+    }, 17000)
+</script>
