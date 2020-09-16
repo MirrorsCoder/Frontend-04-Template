@@ -1,0 +1,104 @@
+<input type="range" id="r" min="0" max="255">
+<input type="range" id="g" min="0" max="255">
+<input type="range" id="b" min="0" max="255">
+<div id="color" style="width: 100px;height: 100px;"></div>
+<script>
+  let callbacks = new Map();
+  // 对象调用reactivty时加缓存
+  let reactivties = new Map();
+
+  let useReactivties = [];
+  let object = {
+    r: 1,
+    g: 1,
+    b: 1
+  }
+
+  // let po = new Proxy(object, {
+  //   set(obj, prop, val) {
+  //     console.log(obj, prop, val);
+  //   }
+  // })
+  // po.a = 3 触发set方法
+  // {a: 1, b: 2} "a" 3
+  // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+
+  let po = reactive(object);
+
+  // 监听 vue API
+  effect(() => {
+    document.getElementById('r').value = po.r;
+  })
+  effect(() => {
+    document.getElementById('g').value = po.g;
+  })
+  effect(() => {
+    document.getElementById('b').value = po.b;
+  })
+  document.getElementById('r').addEventListener('input', event => {
+    po.r = event.target.value
+  })
+  document.getElementById('g').addEventListener('input', event => {
+    po.g = event.target.value
+  })
+  document.getElementById('b').addEventListener('input', event => {
+    po.b = event.target.value
+  })
+
+  effect(() => {
+    document.getElementById('color').style.backgroundColor = `rgb(${po.r},${po.g},${po.b})`;
+  })
+
+  function effect(callback) {
+    // callbacks.push(callback)
+
+    useReactivties = [];
+    callback();
+    console.log(useReactivties);
+
+    for (let reactivty of useReactivties) {
+      if (!callbacks.has(reactivty[0])) {
+        callbacks.set(reactivty[0], new Map());
+      }
+      if (!callbacks.get(reactivty[0]).has(reactivty[1])) {
+        callbacks.get(reactivty[0]).set(reactivty[1], []);
+      }
+      callbacks.get(reactivty[0]).get(reactivty[1]).push(callback);
+    }
+  }
+
+  // 代理object对象
+  function reactive(object) {
+    if (reactivties.has(object))
+      return reactivties.get(object)
+
+    let proxy = new Proxy(object, {
+      set(obj, prop, val) {
+        // 修改对象属性
+        obj[prop] = val;
+        // console.log(obj, prop, val);
+
+        if (callbacks.get(obj))
+          if (callbacks.get(obj).get(prop))
+            for (let callback of callbacks.get(obj).get(prop)) {
+              callback();
+            }
+
+        return obj[prop];
+      },
+      get(obj, prop) {
+        // console.log(obj, prop);
+        useReactivties.push([obj, prop]);
+
+        if (typeof obj[prop] === 'object') {
+          return reactive(obj[prop])
+        }
+
+        return obj[prop];
+      }
+    })
+
+    reactivties.set(object, proxy)
+    return proxy;
+  }
+</script>

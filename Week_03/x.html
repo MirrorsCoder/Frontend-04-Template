@@ -1,0 +1,66 @@
+<script>
+  let callbacks = new Map();
+  let useReactivties = [];
+  let object = {
+    a: 1,
+    b: 2
+  }
+
+  // let po = new Proxy(object, {
+  //   set(obj, prop, val) {
+  //     console.log(obj, prop, val);
+  //   }
+  // })
+  // po.a = 3 触发set方法
+  // {a: 1, b: 2} "a" 3
+  // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+
+  let po = reactive(object);
+
+  // 监听 vue API
+  effect(() => {
+    console.log(po.a);
+  })
+
+  function effect(callback) {
+    // callbacks.push(callback)
+
+    useReactivties = [];
+    callback();
+    console.log(useReactivties);
+
+    for (let reactivty of useReactivties) {
+      if (!callbacks.has(reactivty[0])) {
+        callbacks.set(reactivty[0], new Map());
+      }
+      if (!callbacks.get(reactivty[0]).has(reactivty[1])) {
+        callbacks.get(reactivty[0]).set(reactivty[1], []);
+        callbacks.get(reactivty[0]).get(reactivty[1]).push(callback);
+      }
+    }
+  }
+
+  // 代理object对象
+  function reactive(object) {
+    return new Proxy(object, {
+      set(obj, prop, val) {
+        // 修改对象属性
+        obj[prop] = val;
+        // console.log(obj, prop, val);
+
+        if (callbacks.get(obj))
+          if (callbacks.get(obj).get(prop))
+            for (let callback of callbacks.get(obj).get(prop)) {
+              callback();
+            }
+
+        return obj[prop];
+      },
+      get(obj, prop) {
+        // console.log(obj, prop);
+        useReactivties.push([obj, prop]);
+        return obj[prop];
+      }
+    })
+  }
+</script>
