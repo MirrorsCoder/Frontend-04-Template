@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>动画</title>
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+    }
+
+    .messageBox {
+      /* 背景盒子的属性 */
+      margin: 100px auto;
+      width: calc(1/7*6208px);
+      height: 100%;
+      /*把整张精灵图以背景图的方式引入*/
+      background-image: url(./attack-anima.png);
+      /* 背景定位属性  向左向上移动当前背景图片 */
+      /*-363px  -143px是此小图片在整张精灵图中的 x轴 y轴位置坐标*/
+      background-position: calc(1/7*6208px);
+      transform: scale(0.3);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="messageBox"></div>
+  <script>
+    window.onload = function () {
+      let messageBox = document.getElementsByClassName('messageBox')[0]
+      let index = 0
+      setInterval(function () {
+        ++index
+        messageBox.style.backgroundPosition = `calc(${index / 7 * 6208}px)`
+      }, 100)
+    }
+  </script>
+</body>
+
+</html>

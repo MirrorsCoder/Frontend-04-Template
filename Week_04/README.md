@@ -111,3 +111,19 @@ Object(唯一与状态无关)
 - 行为
 
 Class（分类）
+
+- 归类（多继承）
+- 分类（单继承）
+
+Prototype（原型）
+
+在设计对象的状态和行为时，我们总是遵循“行为改变状态”的原则
+
+key--value
+key: Symbol/String
+value: data(数据属性)/accessor(访问器属性)
+
+- 基本的面向对象机制 {} . [] Object.defineProperty
+- 基于原型的对象 API Object.create / Object.setPrototype / Object.getPrototypeOf
+- 基于类的对象组织方式 new / class / extends
+- new / function / prototype
