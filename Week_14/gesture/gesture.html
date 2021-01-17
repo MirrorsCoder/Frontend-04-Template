@@ -1,0 +1,11 @@
+<script src="./gesture.js"></script>
+<!-- 禁止右键弹出菜单 -->
+
+<body oncontextmenu="event.preventDefault()"></body>
+<script type="module">
+  // import {enableGesture} from './gesture.js'
+  // enableGesture(document.documentElement)
+  document.documentElement.addEventListener('tap', (value) => {
+    console.log('tap event trigger!', value);
+  })
+</script>
